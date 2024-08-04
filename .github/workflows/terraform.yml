@@ -33,19 +33,23 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: terraform format
+        working-directory: ./terraform
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
 
       - name: terraform init
+        working-directory: ./terraform
         id: init
         run: terraform init
 
       - name: terraform validate
+        working-directory: ./terraform
         id: validate
         run: terraform validate -no-color
 
       - name: terraform plan
+        working-directory: ./terraform
         id: plan
         run: terraform plan -no-color
         continue-on-error: true
