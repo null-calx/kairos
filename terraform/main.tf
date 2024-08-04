@@ -9,6 +9,11 @@ terraform {
       version = "~> 4.0"
     }
   }
+  backend "s3" {
+    bucket = "terraform-estate"
+    key = "terraform.tfstate"
+    region = "ap-south-1"
+  }
 }
 
 provider "aws" {
@@ -19,4 +24,8 @@ provider "aws" {
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
+}
+
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "terraform-estate"
 }

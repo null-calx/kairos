@@ -56,9 +56,14 @@ resource "aws_instance" "istaroth" {
     volume_size = 30
   }
 
-  user_data = <<USERDATA
+  user_data = <<EOF
+#!/bin/sh
 
-USERDATA
+apt-get update -y
+apt-get upgrade -y
+apt-get install git -y
+
+EOF
 
   vpc_security_group_ids = [
     aws_security_group.allow_access.id
