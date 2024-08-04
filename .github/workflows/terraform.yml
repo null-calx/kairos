@@ -3,7 +3,8 @@ run-name: terraform deploy
 
 on:
   push:
-    master
+    branches:
+      master
   pull_request:
   workflow_dispatch:
 
