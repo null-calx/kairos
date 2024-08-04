@@ -1,0 +1,3 @@
+#+AUTHOR: calx
+
+All my [[https://istaroth.cc][istaroth.cc]] setup goes here..

@@ -11,15 +11,13 @@ terraform {
   }
   backend "s3" {
     bucket = "terraform-estate"
-    key = "terraform.tfstate"
+    key    = "terraform.tfstate"
     region = "ap-south-1"
   }
 }
 
 provider "aws" {
-  region     = "ap-south-1"
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
+  region = "ap-south-1"
 }
 
 provider "cloudflare" {
