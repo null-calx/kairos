@@ -1,12 +1,7 @@
-name: terraform deploy action
-run-name: terraform deploy
+name: terraform plan action
+run-name: terraform plan
 
 on:
-  push:
-    path:
-      - 'terraform/**'
-    branches:
-      master
   pull_request:
     path:
       - 'terraform/**'
