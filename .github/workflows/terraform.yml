@@ -3,9 +3,13 @@ run-name: terraform deploy
 
 on:
   push:
+    path:
+      - 'terraform/**'
     branches:
       master
   pull_request:
+    path:
+      - 'terraform/**'
   workflow_dispatch:
 
 permissions:
