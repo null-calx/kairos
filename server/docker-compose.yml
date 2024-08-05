@@ -1,0 +1,45 @@
+services:
+
+  nginx:
+    image: docker.io/nginx
+    container_name: nginx
+    networks:
+      - istaroth-network
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/www:/var/www
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - thelounge
+      - jellyfin
+
+  thelounge:
+    image: ghcr.io/thelounge/thelounge:latest
+    container_name: thelounge
+    networks:
+      - istaroth-network
+    # ports:
+    #   - 9000:9000
+    volumes:
+      - ./thelounge/config.js:/var/opt/thelounge/config.js
+      - ./thelounge/users/:/var/opt/thelounge/users/
+
+  jellyfin:
+    image: docker.io/jellyfin/jellyfin
+    container_name: jellyfin
+    networks:
+      - istaroth-network
+    # ports:
+    #   - 8096:8096
+    volumes:
+      - ./jellyfin/config:/config
+      - ./jellyfin/cache:/cache
+      - ./jellyfin/media:/media
+      - ./jellyfin/opt:/opt
+
+networks:
+  istaroth-network:
