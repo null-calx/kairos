@@ -1,3 +1,8 @@
 #+AUTHOR: calx
 
 All my [[https://istaroth.cc][istaroth.cc]] setup goes here..
+
+| address            | service   |
+|--------------------+-----------|
+| [[http://webirc.istaroth.cc/][webirc.istaroth.cc]] | thelounge |
+| [[http://illcow.istaroth.cc/][illcow.istaroth.cc]] | jellyfin  |
