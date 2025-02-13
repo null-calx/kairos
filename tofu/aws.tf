@@ -1,6 +1,7 @@
 data "aws_ami" "debi" {
   most_recent = true
   owners      = ["amazon"]
+
   filter {
     name   = "name"
     values = ["debian-12-amd64-*"]
@@ -41,29 +42,20 @@ resource "aws_vpc_security_group_ingress_rule" "allow_https_ipv4" {
   to_port           = 443
 }
 
-resource "aws_key_pair" "access_key" {
+resource "aws_key_pair" "ssh_key" {
   key_name   = "access-key"
   public_key = var.ssh_public_key
 }
 
-resource "aws_instance" "istaroth" {
+resource "aws_instance" "istaroth_instance" {
   ami                         = data.aws_ami.debi.id
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  key_name                    = aws_key_pair.access_key.key_name
+  key_name                    = aws_key_pair.ssh_key.key_name
 
   root_block_device {
     volume_size = 30
   }
-
-  user_data = <<EOF
-#!/bin/sh
-
-apt-get update -y
-apt-get upgrade -y
-apt-get install git -y
-
-EOF
 
   vpc_security_group_ids = [
     aws_security_group.allow_access.id

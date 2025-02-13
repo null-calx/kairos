@@ -1,0 +1,57 @@
+#+AUTHOR: calx
+
+* Build server
+
+** Update and upgrade
+
+#+BEGIN_SRC sh :tangle build.sh
+  sudo apt-get update -y
+  sudo apt-get upgrade -y
+#+END_SRC
+
+** Install nginx
+
+Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
+
+#+BEGIN_SRC sh :tangle build.sh
+  sudo apt-get install -y curl gnupg2 ca-certificates lsb-release debian-archive-keyring
+
+  curl https://nginx.org/keys/nginx_signing.key \
+      | gpg --dearmor \
+      | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg > /dev/null
+
+  echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+  http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" \
+      | sudo tee /etc/apt/sources.list.d/nginx.list > /dev/null
+
+  echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
+      | sudo tee /etc/apt/preferences.d/99nginx > /dev/null
+
+  sudo apt-get update -y
+  sudo apt-get install -y nginx
+#+END_SRC
+
+* Push changes
+
+Press ~C-c C-c~ inside the following code block!
+
+#+BEGIN_SRC sh :eval yes
+  REMOTE_USER=admin
+  REMOTE_DOMAIN=istaroth.cc
+
+  REMOTE_ADDR=${REMOTE_USER}@${REMOTE_DOMAIN}
+
+  THIS_FILE=build.org
+  SCRIPT_FILE=build.sh
+
+  set -euxo pipefail
+
+  if [[ ! -f $SCRIPT_FILE ]] || [[ $SCRIPT_FILE -ot $THIS_FILE ]]; then
+      echo Tangle the file first!
+      echo Press C-c C-v t or C-c C-v C-t to tangle!
+      exit 0
+  fi
+
+  scp ./$SCRIPT_FILE $REMOTE_ADDR:/home/$REMOTE_USER
+  ssh $REMOTE_ADDR "bash /home/$REMOTE_USER/$SCRIPT_FILE"
+#+END_SRC
