@@ -14,7 +14,7 @@ resource "cloudflare_record" "root_org" {
 
 resource "cloudflare_record" "www_org" {
   zone_id = var.cloudflare_org_zone_id
-  name    = "www.${local.org_domain}"
+  name    = "www"
   content = local.org_domain
   type    = "CNAME"
   ttl     = 1
@@ -32,7 +32,7 @@ resource "cloudflare_record" "root_cc" {
 
 resource "cloudflare_record" "www_cc" {
   zone_id = var.cloudflare_cc_zone_id
-  name    = "www.${local.cc_domain}"
+  name    = "www"
   content = local.cc_domain
   type    = "CNAME"
   ttl     = 1
