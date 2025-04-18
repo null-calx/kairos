@@ -1,4 +1,9 @@
 server/*.out.txt
+server/cert/*.key
+server/cert/*.csr
+server/cert/*.pem
+server/cert/*.ini
+server/certbot/*
 **/.terraform*
 **/*.tfvars
 **/terraform.tfstate*
