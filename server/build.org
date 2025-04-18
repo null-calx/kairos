@@ -1,5 +1,11 @@
 #+AUTHOR: calx
 
+* Variables
+
+#+NAME: server
+| admin       |
+| istaroth.cc |
+
 * Build server
 
 ** Update and upgrade
@@ -31,14 +37,11 @@ Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
   sudo apt-get install -y nginx
 #+END_SRC
 
-* Push changes
+** Push changes
 
 Press ~C-c C-c~ inside the following code block!
 
-#+BEGIN_SRC sh :eval yes
-  REMOTE_USER=admin
-  REMOTE_DOMAIN=istaroth.cc
-
+#+BEGIN_SRC sh :results file :file install.out.txt :var REMOTE_USER=server[0] :var REMOTE_DOMAIN=server[1]
   REMOTE_ADDR=${REMOTE_USER}@${REMOTE_DOMAIN}
 
   THIS_FILE=build.org
@@ -54,4 +57,25 @@ Press ~C-c C-c~ inside the following code block!
 
   scp ./$SCRIPT_FILE $REMOTE_ADDR:/home/$REMOTE_USER
   ssh $REMOTE_ADDR "bash /home/$REMOTE_USER/$SCRIPT_FILE"
+#+END_SRC
+
+* Setup nginx
+
+#+BEGIN_SRC sh :results file none :file nginx.out.txt :var REMOTE_USER=server[0] :var REMOTE_DOMAIN=server[1]
+  REMOTE_ADDR=${REMOTE_USER}@${REMOTE_DOMAIN}
+
+  tar cf nginx.tar nginx
+  gzip nginx.tar
+  scp nginx.tar.gz $REMOTE_ADDR:/home/$REMOTE_USER
+  rm nginx.tar.gz
+
+  cat <<EOF | ssh $REMOTE_ADDR sudo -i
+    pushd /etc >&2
+      rm -rf nginx
+      tar xf /home/$REMOTE_USER/nginx.tar.gz
+    popd >&2
+    nginx -t 2>&1
+    systemctl restart nginx
+  EOF
+
 #+END_SRC
