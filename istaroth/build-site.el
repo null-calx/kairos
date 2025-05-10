@@ -48,7 +48,7 @@
 	 :base-directory "./content"
 	 :publishing-directory "./public"
 	 :publishing-function attachment-probe
-	 :base-extension "css\\|js\\|png\\|jpg\\|svg\\|html\\|txt")
+	 :base-extension "css\\|js\\|png\\|jpg\\|svg\\|html\\|txt\\|org")
 	("istaroth.org"
 	 :components ("istaroth.org-org" "istaroth.org-static"))))
 

@@ -8,3 +8,5 @@ server/certbot/*
 **/*.tfvars
 **/terraform.tfstate*
 server/build.sh
+istaroth/packages
+istaroth/public
