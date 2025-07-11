@@ -48,9 +48,9 @@ resource "cloudflare_record" "nyx_cc" {
   proxied = false
 }
 
-resource "cloudflare_record" "illcow_cc" {
+resource "cloudflare_record" "navi_cc" {
   zone_id = var.cloudflare_cc_zone_id
-  name    = "illcow"
+  name    = "navi"
   content = local.cc_domain
   type    = "CNAME"
   ttl     = 1
