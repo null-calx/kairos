@@ -1,8 +1,8 @@
 server/*.out.txt
-server/cert/*.key
-server/cert/*.csr
-server/cert/*.pem
-server/cert/*.ini
+server/**/*.key
+server/**/*.csr
+server/**/*.pem
+server/**/*.ini
 server/certbot/*
 **/.terraform*
 **/*.tfvars

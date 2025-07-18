@@ -99,24 +99,26 @@ Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
   pip install -U certbot certbot-dns-cloudflare
 #+END_SRC
 
-** Create cloudflare token credentials file
-
-#+BEGIN_SRC sh :results none
-  umask 077
-  sed -n 's/cloudflare_api_token/dns_cloudflare_api_token/p' ../tofu/terraform.tfvars > cert/cloudflare.ini
-#+END_SRC
-
 ** Creating the certificate signing request
 
 #+BEGIN_SRC sh :results file none :file ssl.out.txt
-  openssl genrsa \
-  	-out cert/istaroth.key 2048
+  mkdir -p cert/cc cert/org
 
+  openssl genrsa \
+  	-out cert/cc/istaroth.key 2048
   openssl req \
   	-new \
-  	-key cert/istaroth.key \
-  	-out cert/istaroth.csr \
-  	-config cert/istaroth.conf
+  	-key cert/cc/istaroth.key \
+  	-out cert/cc/istaroth.csr \
+  	-config cert/istaroth.cc.conf
+
+  openssl genrsa \
+  	-out cert/org/istaroth.key 2048
+  openssl req \
+  	-new \
+  	-key cert/org/istaroth.key \
+  	-out cert/org/istaroth.csr \
+  	-config cert/istaroth.org.conf
 #+END_SRC
 
 ** Obtaining the keychain
@@ -124,8 +126,11 @@ Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
 #+BEGIN_SRC sh :results file none :file certbot.out.txt
   source certbot/bin/activate
 
+  umask 077
+  sed -n 's/cloudflare_api_token/dns_cloudflare_api_token/p' ../tofu/terraform.tfvars > cert/cloudflare.ini
+
   certbot certonly \
-  	--csr cert/istaroth.csr \
+  	--csr cert/cc/istaroth.csr \
   	--preferred-challenges dns \
   	--config-dir certbot \
   	--work-dir certbot \
@@ -135,9 +140,26 @@ Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
   	--non-interactive \
   	--agree-tos
 
-  mv 0000_cert.pem cert/cert.pem
-  mv 0000_chain.pem cert/chain.pem
-  mv 0001_chain.pem cert/fullchain.pem
+  mv 0000_cert.pem cert/cc/cert.pem
+  mv 0000_chain.pem cert/cc/chain.pem
+  mv 0001_chain.pem cert/cc/fullchain.pem
+
+  certbot certonly \
+  	--csr cert/org/istaroth.csr \
+  	--preferred-challenges dns \
+  	--config-dir certbot \
+  	--work-dir certbot \
+  	--logs-dir certbot \
+  	--dns-cloudflare \
+  	--dns-cloudflare-credentials cert/cloudflare.ini \
+  	--non-interactive \
+  	--agree-tos
+
+  mv 0000_cert.pem cert/org/cert.pem
+  mv 0000_chain.pem cert/org/chain.pem
+  mv 0001_chain.pem cert/org/fullchain.pem
+
+  rm cert/cloudflare.ini
 #+END_SRC
 
 ** Push the keys
@@ -145,7 +167,7 @@ Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
 #+BEGIN_SRC sh :results file none :file push-ssl.out.txt :var REMOTE_USER=server[0] :var REMOTE_DOMAIN=server[1]
   REMOTE_ADDR=${REMOTE_USER}@${REMOTE_DOMAIN}
 
-  tar cf cert.tar cert/fullchain.pem cert/istaroth.key
+  tar cf cert.tar cert/cc cert/org
   gzip cert.tar
   scp cert.tar.gz $REMOTE_ADDR:/home/$REMOTE_USER
   rm cert.tar.gz
@@ -155,5 +177,6 @@ Documentation: [[https://nginx.org/en/linux_packages.html#Debian]]
     rm -rf cert
     tar xf /home/$REMOTE_USER/cert.tar.gz
     chown root:root -R cert
+    chmod 600 -R cert
   EOF
 #+END_SRC
