@@ -6,7 +6,7 @@ by pressing ~C-c C-c~, while being inside the code block.
 * Variables
 
 #+NAME: server
-| admin       |
+| ubuntu      |
 | istaroth.cc |
 
 * Build server
