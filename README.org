@@ -1,8 +1,1 @@
-#+AUTHOR: calx
-
-All my [[https://istaroth.cc][istaroth.cc]] setup goes here..
-
-| address            | service   |
-|--------------------+-----------|
-| [[http://webirc.istaroth.cc/][webirc.istaroth.cc]] | thelounge |
-| [[http://navi.istaroth.cc/][navi.istaroth.cc]]   | navidrome |
+this project has been moved to [codeberg.org](https://codeberg.org/null-calx/kairos)
